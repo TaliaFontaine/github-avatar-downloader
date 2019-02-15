@@ -1,5 +1,15 @@
 var request = require('request');
 var github_token = require('./secrets');
+var fs = require('fs');
+
+function downloadImageByURL(url, filePath) {
+
+request.get(url)
+       .on('error', function (err) {
+         throw err;
+       })
+       .pipe(fs.createWriteStream(filePath));
+}
 
 
 function getRepoContributors(repoOwner, repoName, cb) {
@@ -19,10 +29,13 @@ function getRepoContributors(repoOwner, repoName, cb) {
   });
 }
 
-getRepoContributors("jquery", "jquery", function(err, result) {
+getRepoContributors("jquery", "jquery", function(err, contributors) {
 console.log("Errors:", err);
-   for (var i = 0; i < result.length; i++) {
-    console.log(result[i].avatar_url);
+   for (var i = 0; i < contributors.length; i++) {
+    var contributor = contributors[i];
+    var avatar_url = contributor.avatar_url
+    var filePath = "avatars/" + contributor.login + ".jpg";
+    downloadImageByURL(avatar_url, filePath);
     }
 });
 
