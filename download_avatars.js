@@ -28,8 +28,9 @@ function getRepoContributors(repoOwner, repoName, cb) {
         cb(err, jsonObject);
   });
 }
-
-getRepoContributors("jquery", "jquery", function(err, contributors) {
+var everythingsFine = process.argv.length >= 4;
+if (everythingsFine) {
+getRepoContributors(process.argv[2], process.argv[3], function(err, contributors) {
 console.log("Errors:", err);
    for (var i = 0; i < contributors.length; i++) {
     var contributor = contributors[i];
@@ -38,4 +39,7 @@ console.log("Errors:", err);
     downloadImageByURL(avatar_url, filePath);
     }
 });
+} else {
+    console.log('Enter a valid argument');
+}
 
